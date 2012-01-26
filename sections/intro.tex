@@ -1,64 +1,77 @@
 \chapter{Introduction}
+With the popularity and usage of social networking rapidly increasing every day there are exabytes upon exabytes of data available for analysis and research. The data available to anyone with an Internet connection includes text, pictures, and videos; virtually anything that can be uploaded onto the Internet.
 
-The document structure should include:
+One area where this data is incredibly useful is in the area of machine-based language research. Possible uses for social networking data in this area include increasing accuracy of machine translation systems, predicting stock prices based on the language people are using at a particular time or even predicting a user's personality based on the language they use. The problem with the text data used in these systems, gained from social networking, is that a lot of it has many spelling errors. These spelling errors, if not corrected, will reduce the overall accuracy of the systems based on the social networking data.
+
+Twitter is one particular social network where users post 140 character messages called Tweets. Users can share messages, links, images, and videos with anyone in the world who wishes to subscribe to their updates. Twitter users alone posted over 95 million Tweets per day in 2011[CITE] so there is a huge amount of text data that can be used for research purposes.
+
+\section{Prior Work}
+Modern spelling error correction systems can be categorised into solving three sub-problems \cite{Kukich1992}:
+
 \begin{itemize}
 \item
-The title page  in the format used above.
+Non-word error detection
 \item
-An optional acknowledgements page.
+Isolated-word error correction
 \item
-The table of contents.
-\item
-The report text divided into chapters as appropriate.
-\item
-The bibliography.
+Context-dependent error detection and correction
 \end{itemize}
 
-Commands for generating the title page appear in the skeleton file and
-are self explanatory.
-The file also includes commands to choose your report type (project
-report, thesis or dissertation) and degree.
-These will be placed in the appropriate place in the title page. 
+In this section, each of the sub-problems are discussed in order to summarise how spelling error detection and correction is done today in general and the problems caused by features specific to Tweets.
 
-The default behaviour of the class is to produce documents typeset in
-12 point, 
-and appropriate for doubled sided printing
-(all new chapters appearing on the first clear right-hand page).
-Regardless of the formatting system you use, 
-it is recommended that you submit your thesis printed (or copied) 
-double sided. 
+\subsection{Non-word Error Detection}
 
-{\bf NB} please note that the report should be printed single-spaced.
-Previously advertised policy of printing in double space has changed
-as of November 24th 1999 and is no longer valid.
-Space recommendations are revised as follows: 
-the dissertation should be around 40 sides in single space printing.
-The page limit is 60 sides in single space printing.  Appendices are in
-addition to the above and you should place detail here which may be too
-much or not strictly necessary when reading the relevant section.
+\subsubsection{Detection}
 
-\section{Using Sections}
+Non-word spelling errors occur when an error causes the word to become a word that doesn't exist in the given language. For example, the non-word \emph{dymanite} might result from a user mistyping the word \emph{dynamite}.
 
-Divide your chapters in sub-parts as appropriate.
+To detect non-word spelling errors a simple technique of dictionary lookup is used. The naive idea behind using dictionary lookup is: if a given word cannot be found in the dictionary then the word must be spelled incorrectly.
 
-\section{Citations}
+\subsubsection{Problems}
 
-Note that citations 
-(like \cite{P1} or \cite{P2})
-can be generated using {\tt bibtex} or by
-creating {\tt thebibliography} environment. This makes sure that the
-table of contents includes an entry for the bibliography.
-Of course you may use any other method as well.
+Using only dictionary lookup for spelling error detection causes a number of problems: 
 
-\section{Class Options}
+\begin{itemize}
+\item
+A correctly spelled word may be flagged as incorrectly spelled if the word is not present in the particular dictionary.
+\item
+An incorrectly spelled word may not be flagged as incorrect if the misspelling is also present in the dictionary.
+\item
+To cover the many words in a language, large dictionaries are necessary which require a great amount of storage space and slow down lookup time.
+\end{itemize} 
 
-The only class option available is {\tt parskip}.
-It alters the paragraph formatting so that each paragraph is separated by
-a vertical space, and there is no indentation at the start of each
-paragraph. 
-This option is used in the current document.
-See {\tt documentclass} in the skeleton file for usage. 
+To solve these problems dictionary choice and their content is key. In 1990, Damerau proposed a technique for automatically generating a domain specific dictionary by using large quantities of text from a particular subject domain \cite{Damerau1990}. Frequency analysis is then performed on the text and a subset with the highest number of occurrences is selected as the dictionary for that subject. Damerau concluded that this was an effective way to produce a domain specific and size-constrained dictionary to ensure high accuracy and low response times on lookup. Other methods to ensure fast lookup times are the use of hash-tables and tries. To solve the problem of misspellings also being present as words in the dictionary context-sensitive spelling error detection can be used and this is discussed later.
 
-\section{Restrictions}
+\subsection{Isolated-word Error Correction}
 
-The class does not allow the use of {\tt listoffigures} or {\tt listoftables}.
+Isolated-word error correction is the correction of words without taking the word's context into consideration. For example, it is possible to correct the word \emph{dymanite} to \emph{dynamite} without looking at the position of the word in the sentence as there are no context-sensitive uses of the word \emph{dynamite}. Isolated-word spelling error correction is usually performed using two complementary techniques: calculating the minimum edit distance of a misspelled word to a correctly spelled word and the Bayesian-based noisy channel model.
+
+\subsubsection{Minimum Edit Distance Method}
+
+To generate a set of candidate spelling error corrections for the isolated word, a common algorithm to use is the minimum edit distance algorithm. To calculate the minimum edit distance between two strings scores are assigned to the three possible actions that can transform one string into another; these actions are insertion, deletion, and substitution. The minimum edit distance between two words is, therefore, the fewest number of actions to transform one string into another. It is possible to use this algorithm to find possible corrections to spelling errors as it is likely that the user has only made a small error in their input.
+
+The disadvantages of using minimum edit distance are the speed of the calculation itself and the need to check every word in the dictionary against the misspelled word. The speed of calculation can be made more efficient by implementing a dynamic programming version of the algorithm. Dynamic programming splits the large problem into smaller sub-problems and stores the results of the sub-problems in a table so that they do not need to be calculated again. By keeping the dictionary sizes small, it is possible to overcome the problem of inefficiency in requiring to check the misspelling against each word in the dictionary.
+
+\subsubsection{Character-level N-gram Method}
+
+\subsubsection{Noisy Channel Model Method}
+
+Once the set of candidate spelling corrections have been found, the noisy channel model can be used to select between the candidates, using Bayesian inference, to find the word that is most likely the word the user was intending to input. The noisy channel model for spelling error correction was first proposed by Kernighan in 1990 \cite{Kernighan1990} and is still in wide use today. Finding the most probable correction is calculated using the equation:
+\[
+\hat{c} = \arg\max_{\forall c \in C} P(t|c) P(c)
+\]
+where C is the set of possible corrections and t is the incorrectly spelled word.
+
+To estimate the term P(c), named the prior probability, one can simply count the occurrences of the word in a large domain specific text. Estimating the prior probability this way means that the most common words in the text are more probable and the least common words have probability close to zero. Obviously, if the word the user meant to input is uncommon then this can cause the spelling error correction system to suggest the wrong word. For this reason, spelling correction systems today offer choice between corrections or use corpora of N-grams to offer more accurate results.
+
+Estimating the likelihood parameter, P(t|c), for each possible correction is done by creating a confusion matrix that stores the number of times one incorrect letter was input instead of the correct letter. It is possible to create this confusion matrix using machine learning techniques e.g. iteration as proposed by Kernighan.\cite{Kernighan1990} Learning the confusion matrix by iteration involves setting all initial values in the matrix to be the same. From there the algorithm is run iteritavely on a data set of spelling mistakes, with the mistakes compared to the corrections returned by the system.
+
+\subsection{Context-dependent Error Detection and Correction}
+
+A more accurate method of spelling error detection and correction is to use the context of each word to determine, first, whether it is spelled correctly, and secondly, which word to replace the incorrect word with. To take context into account one must look at the preceding words to decide if the word is spelled correctly and whether a correction is the right choice. For this task there are many n-gram corpora, most notably Google's 24 gigabyte 5-gram collection, which hold millions of examples of phrases with up to five constituent words. With the n-grams one can more accurately model a noisy channel, as in the preceding section, by calculating the probabilities of n-grams being present in a text instead of calculating the probabilities for individual words. Using this method gives more accurate corrections as it can decide whether a particular word is spelled correctly given the context of the word. For example, using this method allows for a spelling correction system to notice that the user has input the wrong version of \emph{there}, \emph{their}, or \emph{they're} and also correct the user's input with the correct version of \emph{there}, \emph{their}, and \emph{they're}.
+
+\section{Twitter-specific Spelling Error Detection and Correction}
+
+RT @user1508: Today will be historic. More girls will break up with their men today because of #ModernWarfare2
+
+\section{Project Goals}

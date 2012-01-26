@@ -14,7 +14,7 @@ DEFAULT_ARGS = "-shell-escape -interaction=nonstopmode"
 CLEAN.include(['**/*.aux', '*.log', '*.out', '*.pyg', '*.bak', '*.toc', '*.bbl', '*.blg', '*.toc'])
 CLOBBER.include('*.pdf')
 
-task :default => [:build, :clean]
+task :default => [:build, :clean, :view]
 
 desc "Build the document"
 task :build do
