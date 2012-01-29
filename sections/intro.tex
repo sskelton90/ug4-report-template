@@ -1,9 +1,11 @@
 \chapter{Introduction}
 With the popularity and usage of social networking rapidly increasing every day there are exabytes upon exabytes of data available for analysis and research. The data available to anyone with an Internet connection includes text, pictures, and videos; virtually anything that can be uploaded onto the Internet.
 
-One area where this data is incredibly useful is in the area of machine-based language research. Possible uses for social networking data in this area include increasing accuracy of machine translation systems, predicting stock prices based on the language people are using at a particular time or even predicting a user's personality based on the language they use. The problem with the text data used in these systems, gained from social networking, is that a lot of it has many spelling errors. These spelling errors, if not corrected, will reduce the overall accuracy of the systems based on the social networking data.
-
 Twitter is one particular social network where users post 140 character messages called Tweets. Users can share messages, links, images, and videos with anyone in the world who wishes to subscribe to their updates. Twitter users alone posted over 95 million Tweets per day in 2011[CITE] so there is a huge amount of text data that can be used for research purposes.
+
+One area where examples of language data are incredibly useful is in the area of machine-based language research. Possible uses for social networking data in this area include increasing accuracy of machine translation systems, predicting stock prices based on the language people are using at a particular time or even predicting a user's personality based on the language they use. The problem with the text data used in these systems, gained from social networking, is that a lot of it has many spelling errors. These spelling errors, if not corrected, will reduce the overall accuracy of the systems based on the social networking data.
+
+This project aims to create a spelling error correction system tailored to maximise accuracy in correcting the spelling of Tweets collected from the social network Twitter.
 
 \section{Prior Work}
 Modern spelling error correction systems can be categorised into solving three sub-problems \cite{Kukich1992}:
@@ -26,8 +28,6 @@ In this section, each of the sub-problems are discussed in order to summarise ho
 Non-word spelling errors occur when an error causes the word to become a word that doesn't exist in the given language. For example, the non-word \emph{dymanite} might result from a user mistyping the word \emph{dynamite}.
 
 To detect non-word spelling errors a simple technique of dictionary lookup is used. The naive idea behind using dictionary lookup is: if a given word cannot be found in the dictionary then the word must be spelled incorrectly.
-
-\subsubsection{Problems}
 
 Using only dictionary lookup for spelling error detection causes a number of problems: 
 
@@ -52,8 +52,6 @@ To generate a set of candidate spelling error corrections for the isolated word,
 
 The disadvantages of using minimum edit distance are the speed of the calculation itself and the need to check every word in the dictionary against the misspelled word. The speed of calculation can be made more efficient by implementing a dynamic programming version of the algorithm. Dynamic programming splits the large problem into smaller sub-problems and stores the results of the sub-problems in a table so that they do not need to be calculated again. By keeping the dictionary sizes small, it is possible to overcome the problem of inefficiency in requiring to check the misspelling against each word in the dictionary.
 
-\subsubsection{Character-level N-gram Method}
-
 \subsubsection{Noisy Channel Model Method}
 
 Once the set of candidate spelling corrections have been found, the noisy channel model can be used to select between the candidates, using Bayesian inference, to find the word that is most likely the word the user was intending to input. The noisy channel model for spelling error correction was first proposed by Kernighan in 1990 \cite{Kernighan1990} and is still in wide use today. Finding the most probable correction is calculated using the equation:
@@ -64,7 +62,17 @@ where C is the set of possible corrections and t is the incorrectly spelled word
 
 To estimate the term P(c), named the prior probability, one can simply count the occurrences of the word in a large domain specific text. Estimating the prior probability this way means that the most common words in the text are more probable and the least common words have probability close to zero. Obviously, if the word the user meant to input is uncommon then this can cause the spelling error correction system to suggest the wrong word. For this reason, spelling correction systems today offer choice between corrections or use corpora of N-grams to offer more accurate results.
 
-Estimating the likelihood parameter, P(t|c), for each possible correction is done by creating a confusion matrix that stores the number of times one incorrect letter was input instead of the correct letter. It is possible to create this confusion matrix using machine learning techniques e.g. iteration as proposed by Kernighan.\cite{Kernighan1990} Learning the confusion matrix by iteration involves setting all initial values in the matrix to be the same. From there the algorithm is run iteritavely on a data set of spelling mistakes, with the mistakes compared to the corrections returned by the system.
+Estimating the likelihood parameter, P(t\textbar c), for each possible correction is done by creating a confusion matrix that stores the number of times one incorrect letter was input instead of the correct letter. It is possible to create this confusion matrix using machine learning techniques e.g. iteration as proposed by Kernighan.\cite{Kernighan1990} Learning the confusion matrix by iteration involves setting all initial values in the matrix to be the same. From there the algorithm is run iteratively on a data set of spelling mistakes, with the mistakes compared to the corrections returned by the system.
+
+\subsubsection{Character-level N-gram Method}
+
+The use of character-level n-grams for spelling error correction was first proposed in 1983 by E. J. Yannakoudakis and D. Fawthrop. Character-level n-grams split a word into all possible slices of size n. For example, the word "Twitter" can be represented as the set of size 2 n-grams: \{"Tw", "wi", "it", "tt", "te", "er"\}. The main idea behind this algorithm was to use the character-level n-grams as a similarity index between a spelling error and a correctly spelled word in an analogous way to the minimum edit distance method. To decide whether two words are similar two n-gram sets are calculated. The similarity index is then calculated using the equation (given x and y are the two n-gram sets of the two words to be compared:
+
+\[
+similarity(x,y) = \frac{\|x \cap y \|}{\|x \cup y \|}
+\]
+
+The problem with this method is that it does not take into account the ordering of the n-grams, only the presence of them. This fault means that words made up of the same n-grams will have the same similarity index when in fact one word may be more similar than the other. More recently, in 2009 Ahmed et. al. described an extension to the original method described by Yannakoudakis and Fawthrop. This method does take into account the order and placement of the individual n-grams. By comparing each n-gram in the misspelled word to n-grams in the correctly spelled word within a small window it allows for a more accurate similarity metric to be used. Ahmed et. al. found that accuracy increased dramatically when using this new metric when compared to the original as described by Yannakoudakis and Fawthrop.
 
 \subsection{Context-dependent Error Detection and Correction}
 
@@ -72,6 +80,25 @@ A more accurate method of spelling error detection and correction is to use the 
 
 \section{Twitter-specific Spelling Error Detection and Correction}
 
-RT @user1508: Today will be historic. More girls will break up with their men today because of #ModernWarfare2
+The problem of spelling error detection and correction, while not completely solved, is well researched and there exist multiple systems that can fix errors with a high degree of accuracy. The problem with using these existing systems in correcting Tweets is that users of Twitter have a specific way of using language. The biggest problem is that of contractions.
+
+Contractions are used by members of Twitter because of the restrictions placed on the length of one Tweet; Tweets are limited at 140 characters at maximum. In order to maximise the amount of content within one Tweet users tend to shorten words by, for example, removing vowels or replacing words with their symbol counterparts. A typical example of this can be found in the Tweet:
+\begin{quote}
+@user2127 SO true! \& There can't be peace when ppl are playing both sides. I'm 2 convinced there's sum dbl biz going on.
+\end{quote}
+As is obvious from the above example of a typical Tweet; the word "and" has been replaced by the commonly-used ampersand (\&), the word "people" has been shortened to "ppl" by removing all of the vowels, "too" has been replaced by the number two, "some" has been replaced by the shorter-length homophone "sum", "double" has been shortened similarly to "people", and the word "business" has been shortened to "biz". When running this example through Aspell, a Unix spelling error corrector, the only error the software finds is "ppl" and the suggestions for corrections do not include the word "people".
+
+Another problem with spelling error corrections on Tweets specifically is the presence of Twitter-specific features. In order to provide an easy to use and flexible system Twitter includes a few special keywords that activate functions on Tweets. These features are as follows:
+\begin{itemize}
+\item
+@username - Typing the "@" symbol followed by the username of a Twitter user sends a public message to the user specified.
+\item
+#topic - Typing the "#" symbol followed by a topic (also known as a hash tag) allows users to easily find Tweets talking about a particular topic.
+\item
+RT - By inserting the letters "RT" allows a user to repost a Tweet that they found particularly interesting to bring it to the attention of other users.
+\item
+URLs - Users can link to other websites to share content such as pictures, videos, and other websites.
+\end{itemize}
+A solution to spelling error correction for Tweets must deal with all of these features in some way. An important question to ask is whether these are errors at all and whether they need to be corrected or are they part of the Twitter lexicon and acceptable as examples of language for use in a machine language system.
 
 \section{Project Goals}
