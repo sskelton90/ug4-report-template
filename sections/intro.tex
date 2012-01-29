@@ -99,6 +99,28 @@ RT - By inserting the letters "RT" allows a user to repost a Tweet that they fou
 \item
 URLs - Users can link to other websites to share content such as pictures, videos, and other websites.
 \end{itemize}
-A solution to spelling error correction for Tweets must deal with all of these features in some way. An important question to ask is whether these are errors at all and whether they need to be corrected or are they part of the Twitter lexicon and acceptable as examples of language for use in a machine language system.
+A solution to spelling error correction for Tweets must deal with all of these features in some way. An important question to ask is whether these are errors at all, and whether they need to be corrected, or are they part of the Twitter lexicon and acceptable as examples of language for use in a machine language system.
 
 \section{Project Goals}
+The aim of this project is to design and implement a system that meets the following targets: 
+\begin{itemize}
+\item
+The system must be able to detect and correct spelling errors quickly and with accuracy of over 90\%.
+\item
+The system must be trainable using arbitrary amounts and sources of training texts.
+\item
+The system must allow for different detection and correction methods to be selected to simplify experimentation.
+\end{itemize}
+The system that meets the above targets will be used to investigate the following topics:
+\begin{itemize}
+\item
+Is there a specific spelling error correction method or combination of methods that performs better on Tweets?
+\item
+How does the training text selection, in terms of size and content, affect the quality of the Tweet spelling error detection and correction?
+\item
+Is it possible to train an accurate system using collections of Tweets as the training text?
+\item
+How well do each of the systems handle the contractions that are prevalent in Tweets?
+\item
+Does accurately correcting Tweets require context-sensitive methods or are isolated corrections accurate enough?
+\end{itemize}
