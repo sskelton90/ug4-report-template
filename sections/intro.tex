@@ -1,7 +1,7 @@
 \chapter{Introduction}
 With the popularity and usage of social networking rapidly increasing every day there are exabytes upon exabytes of data available for analysis and research. The data available to anyone with an Internet connection includes text, pictures, and videos; virtually anything that can be uploaded onto the Internet.
 
-Twitter is one particular social network where users post 140 character messages called Tweets. Users can share messages, links, images, and videos with anyone in the world who wishes to subscribe to their updates. Twitter users alone posted over 95 million Tweets per day in 2011[CITE] so there is a huge amount of text data that can be used for research purposes.
+Twitter is one particular social network where users post 140 character messages called Tweets. Users can share messages, links, images, and videos with anyone in the world who wishes to subscribe to their updates. Twitter users alone posted over 95 million Tweets per day in 2011 \cite{} so there is a huge amount of text data that can be used for research purposes.
 
 One area where examples of language data are incredibly useful is in the area of machine-based language research. Possible uses for social networking data in this area include increasing accuracy of machine translation systems, predicting stock prices based on the language people are using at a particular time or even predicting a user's personality based on the language they use. The problem with the text data used in these systems, gained from social networking, is that a lot of it has many spelling errors. These spelling errors, if not corrected, will reduce the overall accuracy of the systems based on the social networking data.
 
@@ -56,7 +56,7 @@ The disadvantages of using minimum edit distance are the speed of the calculatio
 
 Once the set of candidate spelling corrections have been found, the noisy channel model can be used to select between the candidates, using Bayesian inference, to find the word that is most likely the word the user was intending to input. The noisy channel model for spelling error correction was first proposed by Kernighan in 1990 \cite{Kernighan1990} and is still in wide use today. Finding the most probable correction is calculated using the equation:
 \[
-\hat{c} = \arg\max_{\forall c \in C} P(t|c) P(c)
+\hat{c} = \arg\max_{\forall c \in C} P(t|c) P(c) (1)
 \]
 where C is the set of possible corrections and t is the incorrectly spelled word.
 
@@ -69,7 +69,7 @@ Estimating the likelihood parameter, P(t\textbar c), for each possible correctio
 The use of character-level n-grams for spelling error correction was first proposed in 1983 by E. J. Yannakoudakis and D. Fawthrop. Character-level n-grams split a word into all possible slices of size n. For example, the word "Twitter" can be represented as the set of size 2 n-grams: \{"Tw", "wi", "it", "tt", "te", "er"\}. The main idea behind this algorithm was to use the character-level n-grams as a similarity index between a spelling error and a correctly spelled word in an analogous way to the minimum edit distance method. To decide whether two words are similar two n-gram sets are calculated. The similarity index is then calculated using the equation (given x and y are the two n-gram sets of the two words to be compared:
 
 \[
-similarity(x,y) = \frac{\|x \cap y \|}{\|x \cup y \|}
+similarity(x,y) = \frac{\|x \cap y \|}{\|x \cup y \|} (2)
 \]
 
 The problem with this method is that it does not take into account the ordering of the n-grams, only the presence of them. This fault means that words made up of the same n-grams will have the same similarity index when in fact one word may be more similar than the other. More recently, in 2009 Ahmed et. al. described an extension to the original method described by Yannakoudakis and Fawthrop. This method does take into account the order and placement of the individual n-grams. By comparing each n-gram in the misspelled word to n-grams in the correctly spelled word within a small window it allows for a more accurate similarity metric to be used. Ahmed et. al. found that accuracy increased dramatically when using this new metric when compared to the original as described by Yannakoudakis and Fawthrop.
