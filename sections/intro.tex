@@ -3,12 +3,12 @@ With the popularity and usage of social networking rapidly increasing every day 
 
 Twitter is one particular social network where users post 140 character messages called Tweets. Users can share messages, links, images, and videos with anyone in the world who wishes to subscribe to their updates. Twitter users alone posted over 95 million Tweets per day in 2011 \cite{} so there is a huge amount of text data that can be used for research purposes.
 
-One area where examples of language data are incredibly useful is in the area of machine-based language research. Possible uses for social networking data in this area include increasing accuracy of machine translation systems, predicting stock prices based on the language people are using at a particular time or even predicting a user's personality based on the language they use. The problem with the text data used in these systems, gained from social networking, is that a lot of it has many spelling errors. These spelling errors, if not corrected, will reduce the overall accuracy of the systems based on the social networking data.
+One area where examples of language data are incredibly useful is in the area of machine-based language research. Possible uses for social networking data in this area include increasing accuracy of machine translation systems, predicting stock prices based on the language people are using at a particular time or even predicting a user's personality based on the language they use. The problem with the text data used in these systems, gained from social networking, is that it has many spelling errors. These spelling errors, if not corrected, will reduce the overall accuracy of the systems based on the social networking data.
 
 This project aims to create a spelling error correction system tailored to maximise accuracy in correcting the spelling of Tweets collected from the social network Twitter.
 
 \section{Prior Work}
-Modern spelling error correction systems can be categorised into solving three sub-problems \cite{Kukich1992}:
+While there is no prior work into Tweet spelling error correction there has been extensive research into spelling correction in general. Modern spelling error correction systems can be categorised into solving three sub-problems \cite{Kukich1992}:
 
 \begin{itemize}
 \item
@@ -72,7 +72,7 @@ The use of character-level n-grams for spelling error correction was first propo
 similarity(x,y) = \frac{\|x \cap y \|}{\|x \cup y \|} (2)
 \]
 
-The problem with this method is that it does not take into account the ordering of the n-grams, only the presence of them. This fault means that words made up of the same n-grams will have the same similarity index when in fact one word may be more similar than the other. More recently, in 2009 Ahmed et. al. described an extension to the original method described by Yannakoudakis and Fawthrop. This method does take into account the order and placement of the individual n-grams. By comparing each n-gram in the misspelled word to n-grams in the correctly spelled word within a small window it allows for a more accurate similarity metric to be used. Ahmed et. al. found that accuracy increased dramatically when using this new metric when compared to the original as described by Yannakoudakis and Fawthrop.
+The problem with this method is that it does not take into account the ordering of the n-grams, only the presence of them. This fault means that words made up of the same n-grams will have the same similarity index when in fact one word may be more similar than the other. More recently, in 2009 Ahmed et. al. described an extension to the original method described by Yannakoudakis and Fawthrop. This method does take into account the order and placement of the individual n-grams. By comparing each n-gram in the misspelled word to n-grams in the correctly spelled word within a small contiguous window it allows for a more accurate similarity metric to be used. Ahmed et. al. found that accuracy increased dramatically when using this new metric when compared to the original as described by Yannakoudakis and Fawthrop.
 
 \subsection{Context-dependent Error Detection and Correction}
 

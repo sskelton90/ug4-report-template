@@ -1,1 +1,39 @@
 \chapter{Timeline}
+
+\section{Background Reading (September - October)}
+The first month of the time allocated to this project was spent researching on how modern spelling error detection and correction is done. This involved reading through many academic papers and journals to gain an overview into how it is done.
+
+\section{Design System (October - November)}
+Over the next couple of months the original high-level design was created. The design was based on existing spelling error correction systems and was drawn using a high-level block diagram design. During this time the classes, objects, and interactions for the Java implementation were defined.
+
+\section{Java Implementation (November - December)}
+Making use of the time given at the end of semester one to focus on the project, the Java implementation was written using the high-level block diagram and class designs. During this phase, a suite of unit tests were created alongside the implementation to ensure correctness of the systems being implemented.
+
+\section{Python Implementation (December - February)}
+While implementing the systems in Java it became clear that too much time was being spent with the intricacies of the Java language so the decision was made to switch to Python and to rewrite the entire system. This rewrite took over two weeks but made up on time that would otherwise be spent working against the Java language.
+
+\section{System Evaluation (February - March)}
+From February onwards, I plan to evaluate the three error correction systems on both general spelling errors and errors relating to Tweets. This will be done by creating experiments that will investigate each of the project goals. The main idea of these experiments is to find out whether the bespoke system tailored to Tweets performs any better than existing systems such as Aspell.
+
+\section{Project Report Writing (February - April)}
+While evaluating the system, the remaining time will be spent on writing the project report. The report will explore and discuss the results from the experiments that were designed to evaluate each of the systems.
+
+\section{Gantt Chart}
+\begin{gantt}[xunitlength=1.2cm,drawledgerline=true]{7}{8}
+	\begin{ganttitle}
+		\titleelement{Sept}{1}
+		\titleelement{Oct}{1}	
+		\titleelement{Nov}{1}	
+		\titleelement{Dec}{1}	
+		\titleelement{Jan}{1}	
+		\titleelement{Feb}{1}	
+		\titleelement{Mar}{1}	
+		\titleelement{April}{1}	
+	\end{ganttitle}
+	\ganttbar{Background Reading}{0}{1}
+	\ganttbarcon{Design System}{1}{1}
+	\ganttbarcon{Java Implementation}{2}{1}
+	\ganttbarcon{Python Implementation}{3}{2}
+	\ganttbarcon{System Evaluation}{5}{1}
+	\ganttbarcon{Project Report Writing}{5}{3}
+\end{gantt}

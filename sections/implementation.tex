@@ -30,14 +30,9 @@ To implement the character-level n-gram method, n-grams of size two (also known 
 \subsubsection{Implementing the Context-Sensitive N-Gram Method}
 Calculating the most likely correction using context-sensitive n-grams requires an extra step to the above algorithms. For this algorithm to work, a set of n-grams collocations and their related number of occurrences in the training texts are calculated and stored in another key-value store. Collocations are defined as collections of words that occur together too often to be a coincidence. The context-sensitive n-gram method works in a similar way to the above methods by first generating a set of possible corrections. Once the set of corrections have been calculated, using the same function as the noisy channel method, they are ranked based on the probability of a correction occurring based on the words surrounding the error.
 
-\section{Final System Design}
-
-\subsection{Language and Libraries}
+\section{Technologies}
 One of the most important design decisions to make when designing a computer system is the language of implementation. Originally when building the first iteration of the system I decided upon choosing Java to implement the system. I made this initial decision as I have strong Java skills and the object-oriented nature of the language, particularly interfaces, fit well with the idea of being able to extend the system easily to add new features. Additionally, Java met the requirement of speed with its highly optimised virtual machine that has been refined over the years to produce an extremely efficient runtime environment. With respect to the data structures and methods required to implement each of the spelling error correction methods, Java includes an efficient key-value store called the HashMap and all of the string operations required.
 
 Unfortunately, as implementation progressed it became increasingly cumbersome to implement the error correction methods with the verbosity of the Java language. For this reason I decided to rewrite the system into Python; another language that I was familiar with. Python's simplicity offered an increase in programming efficiency that allowed for more ideas to be experimented with. In addition, Python's string manipulation methods, particularly the ability to slice a string into arbitrary pieces, was incredibly useful. While Python has a much slower execution time than Java, the productivity gains were much more beneficial to the project.
 
 With the switch to Python as the implementation language of choice it was also possible to introduce the Natural Language Toolkit (NLTK) \cite{} into the system. NLTK provides many common natural language functions that were useful in the implementation of the system, with the collocation finder and word tokeniser being of most use. This dramatically reduced the time to train the system as the functions are efficient and also more accurate than the naive algorithms that were first implemented in the Java version.
-
-\section{Extendibility}
-Interfaces/Dictionaries
