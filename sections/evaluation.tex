@@ -1,26 +1,93 @@
 \chapter{Evaluation}
 
 \section{Examples of Tweets and Errors}
+\begin{itemize}
+	\item Explain a bit about the source of the data, size etc.
+        \begin{itemize}
+          \item Tweets come from 1TB zipped file collected between DATEX and DATEY
+          \item Contains Tweets of the form
+          \item Explain the different terms
+          \item Show good clean example and bad example
+          \item For comparison using standard source text which is made up of AP Newswiretexts and some Project Gutenburg
+          \item Has around X unique words which represents a good size of language
+        \end{itemize}
+	\item Good Tweet - 20091110083240 user1443@user1444 What a great weekend for football, Cats beat KU and Cowboys beat the Eagles! web
+        \item Bad Tweet - 20091110083241 user1458 @user1459 pois é né? tem qe me passar pow, kasopakspoasas.. condideração 0 da sua parte, nao passa nem o Nº p/ abiguinha :p maalaa sz '.' web
+        \item Error - 20091110083322 user1801 jz came back home,almost had an accident jz now.... *haih* i hate freaking drivers who dont utilize thier signal lights!!!! argh!!!! =?
+\end{itemize}
 
 \section{Evaluation Metric}
+\begin{itemize}
+	\item Gather sets of 100 Tweets from dataset
+	\item Manually read through and correct if needed
+	\item Run same Tweets through the system/systems
+	\item Compare the system-corrected Tweets with the manually-corrected Tweets
+	\item Metric is then the percentage equality between system-corrected and manually-corrected
+\end{itemize}
 
 \section{Comparing the Accuracy on Generic Spelling Error Correction}
+
 \subsection{Methods of Experimentation}
+\begin{itemize}
+	\item Gather different texts that may contain spelling errors
+	\item Compare each of the systems including the voting system and an Aspell run on non-Tweets
+	\item Repeat 3 times and take average accuracy
+	\item Use percentage accuracy to decide which is better
+	\item Does any one of the systems/voting system perform better?
+\end{itemize}
+
 \subsection{Results and Analysis}
+Lots of numbers, explanations and graphs
 
 \section{Comparing the Accuracy on Tweets}
 \subsection{Methods of Experimentation}
+\begin{itemize}
+	\item Collect sets of Tweets and matching corrected Tweets
+	\item Compare each of the systems including the voting system and an Aspell run on non-Tweets
+	\item Average accuracy over each of the Tweet sets
+	\item Use evaluation metric to decide which is better
+	\item Does any one of the systems/voting system perform better?
+\end{itemize}
+
 \subsection{Results and Analysis}
+Lots of numbers, explanations and graphs
 
 \section{Comparing Language Model with Accuracy of Correction}
 \subsection{Methods of Experimentation}
+\begin{itemize}
+	\item Collect sets of Tweets and matching corrected Tweets
+	\item Collect 3 different sources of training texts (Modern, Gutenburg, 3rd source?)
+	\item Train up system on each of the sources
+	\item Compare each of the systems including the voting system and an Aspell run on non-Tweets
+	\item Average accuracy over each of the Tweet sets
+	\item Use evaluation metric to decide which is better
+	\item Does any one of the systems/voting system perform better?
+\end{itemize}
+
 \subsection{Results and Analysis}
+Lots of numbers, explanations and graphs
 
 \section{Is it Possible to Train on Tweets?}
 \subsection{Methods of Experimentation}
+\begin{itemize}
+	\item Collect training sets of Tweets
+	\item Collect sets of Tweets and matching corrected Tweets
+	\item Train up system on each of the training sets of Tweets
+	\item Compare each of the systems including the voting system and an Aspell run on non-Tweets
+	\item Average accuracy over each of the Tweet sets
+	\item Use evaluation metric to decide which is better
+	\item Does any one of the systems/voting system perform better?
+\end{itemize}
+
 \subsection{Results and Analysis}
+Lots of numbers, explanations and graphs
 
 \section{Is it possible to Fit Corrections to 140 Characters?}
 \subsection{Methods of Experimentation}
-\subsection{Results and Analysis}
+\begin{itemize}
+	\item Explore each of the results length to see if it's required first
+	\item Then explore if anything can be done to shorten Tweets back to 140 characters
+\end{itemize}
 
+\subsection{Results and Analysis}
+Lots of numbers, explanations and graphs
