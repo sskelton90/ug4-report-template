@@ -42,18 +42,23 @@ Of course, as was alluded to in previous sections in this report there are many 
 20091110083322 user1801 jz came back home,almost had an accident jz now.... *haih* i hate freaking drivers who dont utilize thier signal lights!!!! argh!!!! =? web
 \end{quote}
 
-This Tweet, in particular, is a good example of the types of spelling errors that are common on Twitter. The user has used the contraction \"jz\" to replace the longer word \"just\" and the common spelling mistake of \"thier\" when the correctly spelled word should be \"their\". The format of all Tweets represents the date the Tweet was posted, the anonymised user name of the author, the Tweet message itself, and then the source application or website of the Tweet. Maintaining this structure is a vital part of the process to ensure that later systems which use the data can still use some of the data features other than the Tweets' text.
+This Tweet, in particular, is a good example of the types of spelling errors that are common on Twitter. The user has used the contraction "jz" to replace the longer word "just" and the common spelling mistake of "thier" when the correctly spelled word should be "their". The format of all Tweets represents the date the Tweet was posted, the anonymised user name of the author, the Tweet message itself, and then the source application or website of the Tweet. Maintaining this structure was a vital part of the process to ensure that later systems, such as machine translation systems, which use the data can still use some of the data features other than the Tweets' text.
 
 \section{Evaluation Metric}
 
+To evaluate how well the Tweet spelling error correction system worked an evaluation metric was devised to quantitatively measure the accuracy of each of the systems presented. The first step in this process was to gather sets of different Tweets to correct. To do this the 1TB Tweet file was randomly sampled until 100 Tweets were gathered for each set. By randomly sampling the data set the evaluation set was guaranteed to include spelling errors but also Tweets with no spelling errors which is an important test for the algorithms. 100 Tweets was selected in order to measure accurately a large number of Tweets while also keeping the human intervention in the system to a minimum. The process of randomly sampling the data was performed three times to create three sets of Tweet data. Using three sets of different Tweets increased the value of the evaluation metric by guaranteeing that none of the algorithms can be particularly suited to one set of data and that they must perform well over all sets to achieve a high rate of accuracy. The final amount of Tweet data that was selected to be used was three sets of 100 Tweets.
 
-\begin{itemize}
-	\item Gather sets of 100 Tweets from dataset
-	\item Manually read through and correct if needed
-	\item Run same Tweets through the system/systems
-	\item Compare the system-corrected Tweets with the manually-corrected Tweets
-	\item Metric is then the percentage equality between system-corrected and manually-corrected
-\end{itemize}
+The next stage of the evaluation metric was to manually go through each of the evaluation sets of 100 Tweets and produce a new set of Tweets with any spelling errors corrected. If the Tweet was already spelled correctly the Tweet was copied to the new set verbatim. An example of this mapping from the set is:
+
+\begin{quote}
+20091110083322 user1801 jz came back home,almost had an accident jz now.... *haih* i hate freaking drivers who dont utilize thier signal lights!!!! argh!!!! =? web
+
+20091110083322 user1801 just came back home,almost had an accident just now.... *haih* i hate freaking drivers who don't utilize their signal lights!!!! argh!!!! =? web
+\end{quote}
+
+To calculate the evaluation score for an algorithm using the above original to corrected Tweet mapping the system compares each system-corrected word, including the extra meta-data, to the human-corrected Tweet. From this comparison a percentage correctness could be calculated and this was the evaluation score for a particular algorithm on a particular Tweet. This process continued for all Tweets in one evaluation set until a single score was achieved by averaging over the percentage accuracy from each Tweet. Once the score for a single evaluation set is calculated, the process began again with the other two evaluation sets. The final score for the algorithm was then the average percentage correct over the three sets.
+
+To further quantify the effectiveness of the various systems created time of execution was also calculated. The time of execution was only timed during the detection and correction phase and not the training phase as the times would largely be the same. The time was taken using Python's \emph{time.time()} \cite{} as is provided by the standard library. The time for execution was then simply the difference between the time taken at the end and the time taken at the beginning. The final output of the timing operation was then defined as the number of Tweets corrected per second.
 
 \section{Comparing the Accuracy on Generic Spelling Error Correction}
 
