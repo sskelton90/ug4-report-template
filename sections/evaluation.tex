@@ -1,22 +1,52 @@
 \chapter{Evaluation}
 
-\section{Examples of Tweets and Errors}
-\begin{itemize}
-	\item Explain a bit about the source of the data, size etc.
-        \begin{itemize}
-          \item Tweets come from 1TB zipped file collected between DATEX and DATEY
-          \item Contains Tweets of the form
-          \item Explain the different terms
-          \item Show good clean example and bad example
-          \item For comparison using standard source text which is made up of AP Newswiretexts and some Project Gutenburg
-          \item Has around X unique words which represents a good size of language
-        \end{itemize}
-	\item Good Tweet - 20091110083240 user1443@user1444 What a great weekend for football, Cats beat KU and Cowboys beat the Eagles! web
-        \item Bad Tweet - 20091110083241 user1458 @user1459 pois é né? tem qe me passar pow, kasopakspoasas.. condideração 0 da sua parte, nao passa nem o Nº p/ abiguinha :p maalaa sz '.' web
-        \item Error - 20091110083322 user1801 jz came back home,almost had an accident jz now.... *haih* i hate freaking drivers who dont utilize thier signal lights!!!! argh!!!! =?
-\end{itemize}
+Evaluation of the performance of a system is one of the most important part of the process in implementing a new system. For the Twitter spelling error correction system evaluation was particularly important to justify building an entire system instead of using existing software systems. In this chapter, the dataset used for experimentation is described, an evaluation metric used to compare the effectiveness of the new systems created, and the results of the various investigations into the questions posed in section 1 are performed and analysed.
+
+\section{The Data Set}
+
+For a machine learning task, such as the Twitter spelling error correction system designed and implemented throughout this report, the key to the accuracy and effectiveness of the system is the amount and quality of the data. Machine learning systems, by definition, learn from the data that is supplied to them and therefore need many examples to work from to further their knowledge and provide the most accurate results. For this task there were two forms of data required to train and evaluate the system.
+
+Firstly, training data was required in order to build a system that could know what a spelling error looked like and could subsequently correct that error to the word that the user originally intended to type or should have typed. For this task, the length of the texts was particularly important in order to provide enough variety to model as much of the commonly used English language as possible in order to decrease the number of false positive spelling errors detected. As well as length, the spelling in the texts must be of a high quality to ensure that any corrections suggested by the system are more likely to be correct than if the training data is filled with errors. 
+
+Taking the preceding requirements and the availability of corpora within the University into account the Associated Press Worldstream (APW) \cite{} was chosen as the main training text for the system. This corpus encompasses news stories as circulated by the Associated Press (AP) newswire. AP estimates that around 200 new stories are published each day \cite{} and therefore obviously there was a lot of text data that could be used to train the system. In addition to the amount of text, the quality of the texts was guaranteed to be of higher quality than some other text sources such as simply gathering text from websites online. As the news stories are published in newspapers and online they require high quality writing and are thoroughly edited before publication so represented a good example of well formed and spelled text. The final reason for choosing the APW was the recency of the publication. There are many corpora available for use but since Twitter is a fairly new and modern technology, the language that is used in the Tweets is reflected in this. Therefore, as the spelling error correction system was trying to model the language used by Twitter users it made sense to choose a set of text that was written more recently as it better modelled the modern English language.
+
+As the APW corpus is large a smaller subset of the corpus was selected for use in the system. The 2002 section of the corpus was selected as it represented a good amount of recent text (roughly 300MB) while not sacrificing the speed of training. Below is an example of the format of content in the APW corpus:
+
+\begin{verbatim}
+<P>
+``We have a very short timetable to sit with Russia as 19 plus
+1,'' Robertson said, explaining that NATO hopes to have the
+structure of the new council ironed out by mid-May, when allied
+foreign ministers meet in Reykjavik, Iceland, and approved at a
+summit in Prague in November.
+</P>
+\end{verbatim}
+
+By using this dataset with the system, the resulting dictionary contains just below 38000 unique words. This is a fairly good size of dictionary as the Oxford English Dictionary states that 50000 words represent over 95\% of the entire English language \cite{}.
+
+To test the correction abilities of the spelling error correction systems there are two sets of data. The first set of data is part of the Birbeck Spelling Error Corpus \cite{} and is compiled from many misspellings of words taken from the students' of Sheffield University's Information Studies Department \cite{}. This dataset also pairs the spelling error with their respective correction which makes it easy to gauge the accuracy of a spelling error correction system on isolated-word errors.
+
+Evaluating the accuracy on Tweets requires a large number of Tweets to correct. The Informatics department at The University of Edinburgh has collected and made available over 1TB worth of compressed Tweets\cite{}. This data was collected between DATEX and DATEY using a Hadoop cluster \cite{} that processes and stores over 1 million Tweets per day. The Tweets in this collection have been anonymised but still contain all of the other features of Tweets such as \emph{@Usernames} and \emph{#Hashtags}. An example of a Tweet from this dataset is presented below:
+
+\begin{quote}
+20091110083240 user1443 @user1444 What a great weekend for football, Cats beat KU and Cowboys beat the Eagles! web
+\end{quote}
+
+As well as recognising and correcting spelling errors in Tweets, it was important that the spelling error system recognised correctly spelled words and did not attempt to correct them. For this reason the data set included correctly spelled Tweets as well as Tweets containing spelling errors.
+
+As was described in section 2 there were a great number of Tweets that are not in English as the Tweet collection process retrieves all Tweets that are visible publicly on Twitter. These foreign language Tweets can also contain Unicode characters that need to be handled without error.
+
+Of course, as was alluded to in previous sections in this report there are many Tweets in the dataset with spelling errors. One example is:
+
+\begin{quote}
+20091110083322 user1801 jz came back home,almost had an accident jz now.... *haih* i hate freaking drivers who dont utilize thier signal lights!!!! argh!!!! =? web
+\end{quote}
+
+This Tweet, in particular, is a good example of the types of spelling errors that are common on Twitter. The user has used the contraction \"jz\" to replace the longer word \"just\" and the common spelling mistake of \"thier\" when the correctly spelled word should be \"their\". The format of all Tweets represents the date the Tweet was posted, the anonymised user name of the author, the Tweet message itself, and then the source application or website of the Tweet. Maintaining this structure is a vital part of the process to ensure that later systems which use the data can still use some of the data features other than the Tweets' text.
 
 \section{Evaluation Metric}
+
+
 \begin{itemize}
 	\item Gather sets of 100 Tweets from dataset
 	\item Manually read through and correct if needed
