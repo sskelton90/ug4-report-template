@@ -1,9 +1,7 @@
 \chapter{Evaluation}
-
 Evaluation of the performance of a system is one of the most important part of the process in implementing a new system. For the Twitter spelling error correction system evaluation was particularly important to justify building an entire system instead of using existing software systems. In this chapter, the dataset used for experimentation is described, an evaluation metric used to compare the effectiveness of the new systems created, and the results of the various investigations into the questions posed in section 1 are performed and analysed.
 
 \section{The Data Set}
-
 For a machine learning task, such as the Twitter spelling error correction system designed and implemented throughout this report, the key to the accuracy and effectiveness of the system is the amount and quality of the data. Machine learning systems, by definition, learn from the data that is supplied to them and therefore need many examples to work from to further their knowledge and provide the most accurate results. For this task there were two forms of data required to train and evaluate the system.
 
 Firstly, training data was required in order to build a system that could know what a spelling error looked like and could subsequently correct that error to the word that the user originally intended to type or should have typed. For this task, the length of the texts was particularly important in order to provide enough variety to model as much of the commonly used English language as possible in order to decrease the number of false positive spelling errors detected. As well as length, the spelling in the texts must be of a high quality to ensure that any corrections suggested by the system are more likely to be correct than if the training data is filled with errors. 
@@ -45,10 +43,10 @@ Of course, as was alluded to in previous sections in this report there are many 
 This Tweet, in particular, is a good example of the types of spelling errors that are common on Twitter. The user has used the contraction "jz" to replace the longer word "just" and the common spelling mistake of "thier" when the correctly spelled word should be "their". The format of all Tweets represents the date the Tweet was posted, the anonymised user name of the author, the Tweet message itself, and then the source application or website of the Tweet. Maintaining this structure was a vital part of the process to ensure that later systems, such as machine translation systems, which use the data can still use some of the data features other than the Tweets' text.
 
 \section{Evaluation Metric}
-
+\label{eval}
 To evaluate how well the Tweet spelling error correction system worked an evaluation metric was devised to quantitatively measure the accuracy of each of the systems presented. The first step in this process was to gather sets of different Tweets to correct. To do this the 1TB Tweet file was randomly sampled until 100 Tweets were gathered for each set. By randomly sampling the data set the evaluation set was guaranteed to include spelling errors but also Tweets with no spelling errors which is an important test for the algorithms. 100 Tweets was selected in order to measure accurately a large number of Tweets while also keeping the human intervention in the system to a minimum. The process of randomly sampling the data was performed three times to create three sets of Tweet data. Using three sets of different Tweets increased the value of the evaluation metric by guaranteeing that none of the algorithms can be particularly suited to one set of data and that they must perform well over all sets to achieve a high rate of accuracy. The final amount of Tweet data that was selected to be used was three sets of 100 Tweets.
 
-The next stage of the evaluation metric was to manually go through each of the evaluation sets of 100 Tweets and produce a new set of Tweets with any spelling errors corrected. If the Tweet was already spelled correctly the Tweet was copied to the new set verbatim. An example of this mapping from the set is:
+The next stage of the evaluation metric was to manually correct each of the evaluation sets of 100 Tweets and produce a new set of Tweets. If the Tweet was already spelled correctly the Tweet was copied to the new set verbatim. An example of this mapping from the set is:
 
 \begin{quote}
 20091110083322 user1801 jz came back home,almost had an accident jz now.... *haih* i hate freaking drivers who dont utilize thier signal lights!!!! argh!!!! =? web
@@ -60,34 +58,115 @@ To calculate the evaluation score for an algorithm using the above original to c
 
 To further quantify the effectiveness of the various systems created time of execution was also calculated. The time of execution was only timed during the detection and correction phase and not the training phase as the times would largely be the same. The time was taken using Python's \emph{time.time()} \cite{} as is provided by the standard library. The time for execution was then simply the difference between the time taken at the end and the time taken at the beginning. The final output of the timing operation was then defined as the number of Tweets corrected per second.
 
-\section{Comparing the Accuracy on Generic Spelling Error Correction}
+\section{Accuracy of Generic Spelling Error Correction}
+The first area of evaluation for the system was on generic spelling error correction. Generic spelling error correction is the correction of errors found in texts other than Tweets. By exploring this accuracy it was possible to investigate whether the system performed well on spelling error correction in general. This was important to ensure that the system offered at least comparable accuracy to existing systems and could correct spelling errors.
 
 \subsection{Methods of Experimentation}
-\begin{itemize}
-	\item Gather different texts that may contain spelling errors
-	\item Compare each of the systems including the voting system and an Aspell run on non-Tweets
-	\item Repeat 3 times and take average accuracy
-	\item Use percentage accuracy to decide which is better
-	\item Does any one of the systems/voting system perform better?
-\end{itemize}
+To explore the accuracy of spelling error correction each of the algorithms was tested against the Sheffield University Information Science dataset \cite{}. As explained before, this dataset included 384 spelling errors and their resulting corrections. The accuracy of each algorithm was calculated as a percentage of corrections that match the expected corrections. To fairly compare accuracy of each of the algorithms, Aspell \cite{}, a Unix spelling error corrector, was used as a baseline system by selecting the first suggested correction for each error in the corpus and reporting the overall accuracy of the correction.
 
 \subsection{Results and Analysis}
-Lots of numbers, explanations and graphs
+The results of the experiments are presented below in the bar chart below.
 
-\section{Comparing the Accuracy on Tweets}
+\begin{figure}[!h]
+	\centering
+	\label{fig:errorchart}
+	\includegraphics[scale=0.65]{images/sheffieldaccuracy}
+	\caption{Graph showing the accuracy of each of the spelling correction methods against the Sheffield University spelling error corpus}
+\end{figure}
+
+\subsubsection{Aspell Results}
+A surprising result from this investigation was the comparatively low score of 73.7\% for the Aspell software on this evaluation set. Aspell seemed to have difficulty with errors that contain sounds that are slightly different from the sounds in the correct correction. This problem is due to the method that Aspell uses for correction that ranks possible correction candidates based on how close they sound rather than how close they are spelled.
+
+\subsubsection{Norvig's Noisy Channel Method Results}
+Using the spelling error to correction mappings we see that Norvig's noisy channel method for spelling error correction performs best with 84.6\% accuracy. In the Sheffield corpus most of the errors are one edit distance away from a correctly spelled word and Norvig's high rate of accuracy can be attributed to the algorithm's method which makes the assumption that most spelling errors occur within only one character distance from a correctly spelled word. Some examples of words that Norvig's algorithm got incorrect were:
+\begin{itemize}
+\item Corrected ommissions to commissions but correct result was omissions
+\item Corrected potentialy to potential but correct result was potentially
+\item Corrected heuritics to heuritics but correct result was heuristics
+\end{itemize}
+The errors in Norvig's method can be explained by the dictionary used to store correct words and their probability of appearing in a text. As Norvig's method ranks possible corrections based on these probabilities, a lot of the accuracy of correction balances on the contents of the dictionary and whether there were more occurrences of a particular word in the training texts provided at the training stage.
+
+\subsubsection{Character-Level N-Gram Method Results}
+Unfortunately, the character-level n-gram method did not perform particularly well in comparison to the other methods with an accuracy of 71.7\%. Examples of some errors when using this method were:
+\begin{itemize}
+\item Corrected homr to homer but correct result was home
+\item Corrected wiil to wil but correct result was will
+\item Corrected tiem to tie but correct result was item
+\end{itemize}
+The above results suggest that the character-level n-gram method seems to favour shorter corrections over the longer correct correction. This can be explained by the scoring method which assigns a smaller number of n-grams to the shorter word meaning the correction has to match fewer n-grams to receive a higher score than a longer word. This is obviously a weakness of the algorithm and leads to an accuracy far below an acceptable level for any spelling error corrector. Another weakness of this system is the requirement that a correction must share many of the same n-grams as a correct word. This requirement means that errors that are caused by the switching of letters will result in different n-grams and the system will be less likely to find the correction.
+
+\subsubsection{Word-Level N-Gram Method Results}
+The final singular method of spelling error correction was the word-level n-gram correction method which requires context to work correctly. In the case of this experiment there was no context that could be used for each of the corrections and so a blank context was given at each step in the evaluation. By giving the algorithm no context to work with it produced roughly similar answers to the other isolated error correction methods described above and achieved an accuracy percentage of 73.4\%.
+
+\subsubsection{Voting Algorithm Results}
+The idea behind using a voting algorithm was that the system would have a greater accuracy than the sum of its parts. Investigating this claim using the Sheffield spelling error corpus we see that the voting algorithm performs at least as well as its best performing sub-algorithm with an accuracy rate of 84.6\%. Example output from the voting algorithm is given below:
+\begin{itemize}
+\item {['facilities', 'facilities', 'facilities']} which gave the correct output of facilities
+\item {['worth', 'worst', 'worth']} which gave the correct output of worth
+\item {['similarly', 'similarity', 'similarly']} which gave the incorrect output of similarly
+\end{itemize}
+The strikingly similar accuracy rate for the voting algorithm and the Norvig noisy channel method occurred because the Norvig algorithm achieved 84.6\% on the same errors and without the necessary context the word-level n-gram method produced very similar results to the Norvig algorithm. For this reason, most of the time there will be at least two outputs from two algorithms that produce the same answer and therefore the voting algorithm had the same accuracy as the Norvig noisy channel correction method.
+
+\subsection{Overall Conclusion}
+Overall Norvig's noisy channel modelling method and the combined voting algorithm performed best on the test set of spelling error mappings. This accuracy was almost almost 10\% greater than all of the other spelling error correction methods. Following from the results of the experiment, it was decided that the voting algorithm would offer the best chance of producing the highest accuracy when applied to Tweets and should therefore be used in the next experiment.
+
+\section{Accuracy on Tweets}
+The main goal of this project was to design and implement a system that could perform with the best possible accuracy in correcting Tweets from Twitter. For that reason, it was an obvious choice to measure the accuracy of correction on real Tweets to ensure that the system designed was of a high standard.
+
 \subsection{Methods of Experimentation}
-\begin{itemize}
-	\item Collect sets of Tweets and matching corrected Tweets
-	\item Compare each of the systems including the voting system and an Aspell run on non-Tweets
-	\item Average accuracy over each of the Tweet sets
-	\item Use evaluation metric to decide which is better
-	\item Does any one of the systems/voting system perform better?
-\end{itemize}
+To explore the accuracy of the voting algorithm, which performed best on generic spelling error correction in the previous section, a comparison was made with the existing Aspell spelling error correction software on three sets of 100 Tweets. The test set of Tweets included the corrected version of the Tweet alongside the original Tweet as found in the Tweet corpus. The evaluation metric as described in section \ref{eval} was then applied to each Tweet and an overall percentage accuracy was reported for each of the methods.
 
-\subsection{Results and Analysis}
-Lots of numbers, explanations and graphs
+The test sets used for the evaluation can be found in the appendix.
+
+\subsection{Results}
+The results of the investigation are presented in the graph below:
+
+\begin{figure}[!h]
+	\centering
+	\label{fig:accuracychart}
+	\includegraphics[scale=0.6]{images/accuracychart}
+	\caption{Results of accuracy evaluation on new voting algorithm and Aspell.}
+\end{figure}
+
+The results clearly show a large 35.5\% increase in average accuracy over the 300 Tweets for the novel voting algorithm presented in this report. At its largest, the difference between the existing Aspell system and the new voting algorithm was 37.3\% which suggests a significant increase in spelling quality was obtained. The results and consequences of the experiment are further discussed in section \ref{analysisT}.
+
+\subsection{Analysis}
+\label{analysisT}
+Along with the percentage similarity, the evaluation system also outputs the differences between the expected output from the error correction and the actual output from the correction system. This extra output allowed for error analysis to be performed on the output for both systems to highlight the areas of common mistakes in their correction. Additionally, the output from the error analysis could be used to increase accuracy of the voting algorithm to ensure that the voting algorithm was producing the best possible results.
+
+An example output from the evaluation program when applied to output gained from the voting algorithm is presented below:
+\begin{figure}[!h]
+	\centering
+	\label{fig:output}
+	\includegraphics{images/sampleoutput}
+	\caption{Sample evaluation output of voting algorithm.}
+\end{figure}
+
+For this example, the output of the voting algorithm on set 1 \ref{} was tested against the corrected version of set 1 \ref{}. In figure \ref{fig:output}, the expected output of the system is given on the left and the actual output for the system is on the right. The last value is the total accuracy of the correction as a function of the total number of words in the Tweets corrected and the number of accurate error corrections.
+
+The biggest difference in errors from the Aspell program that were correctly handled by the voting algorithm were the Tweet specific features such as URLs, \emph{#Hashtags}, \emph{@Usernames}, and \emph{Re-Tweets}. Obviously, without any special treatment the Aspell program handled all text it was given as letters and words and then tried to correct them. This produced results such as \emph{"href"}, the term to signify a link, being corrected to \emph{"ref"} which if left in this way would break any future uses for the link in the Tweet as there would be no way to know what a link was. While correcting Tweets, Aspell also highlighted \emph{\#Hashtags} and \emph{@Usernames} as spelling errors in the source. Luckily, in these cases as there were no words that could possibly contain \emph{@} or \emph{\#}, the Aspell system ignored the errors and left them as they appeared.
+
+Another large difference between the results of the Aspell program and the new voting algorithm was in the correction of languages other than English. When faced with a language other than English, such as those found in a large number of the Tweet collection, Aspell attempts to correct them to their closest English word in terms of edit distance. This produced errors that would hinder the use of non-English language Tweets in further studies as the original language will not be maintained. On the other hand, as the voting algorithm contains a condition that breaks further correction if it detects a large number of corrections required it is possible to keep the original language intact. Unfortunately, around 20\% of all errors made by the voting algorithm were caused by the simplistic language detection but as the number of total errors made by the voting algorithm is relatively small, compared to Aspell, the total effect on the quality of correction was thought to be negligible.
+
+With Tweets a common occurrence is the shortening of longer words in order to fit as much content as possible into the 140 character limit. When contractions were found in the Tweets by Aspell, it attempted to correct them using the same method as it used for all other words. Using this method it found the correct words in its dictionary that were closest to what it thought was an error. Without the extra knowledge of the fact that some of the errors might actually be a contraction this produced many errors in the correction. While the Aspell software struggled to correct contractions the voting algorithm was built with contractions in mind at the design stage. Through careful analysis of the errors in correction for the voting algorithm a selection of commonly used contractions was compiled and inserted into the algorithm so that when one of the contractions is encountered it is simply replaced with the full word. Overall, this method in the new voting algorithm worked well on contractions that are unambiguous such as \emph{"u"} to \emph{"you"} but can incorrectly change a contraction when it is ambiguous what word the user means to shorten. Ambiguous contractions include the number \emph{"2"} in which the user might have meant \emph{"to"}, \emph{"too"}, or it might not have been a contraction at all and they meant to use the number 2. The ambiguous correction problem occurred around 6\% of the time when evaluating the three evaluation sets and could therefore be described as not a significant problem.
+
+One area that the new voting algorithm performed well in is when the error is only one character away from being a correctly spelled word. Commonly occurring word usage on Twitter such as dropping the final \emph{"g"} from words that end in \emph{"ing"} were accurately corrected around 90\% of the time. Other errors that are only one edit unit away from a correct word didn't fair quite as well as with the \emph{"ing"} words. It was a particular problem for shorter words as due to their length not enough information was available and they could be classified more easily as an incorrect word than a longer word with only one edit distance unit away which will have more correct characters and will likely be corrected accurately.
+
+\begin{itemize}
+\item Graph of the different kinds of errors and their occurrences
+\item Voting performs well on words that only have one letter wrong
+\item Voting sometimes doesn't notice certain colloquialisms but I added some and got better results
+\item Algorithms within voting cannot recognise errors caused by words being accidentally merged
+\item Errors that are actually words cause a bit of a problem
+\item Sometimes errors occur when plural word is not recognised but its singular form is
+\item Doesn't recognise elongated words such as "yeaaaaaaah"
+\item Some brand names or popular names aren't recognised
+\item Unicode encoding errors
+\end{itemize}
 
 \section{Comparing Language Model with Accuracy of Correction}
+As the system built uses knowledge it learned from sources of text that was given to it, the accuracy of the system can be affected by the quality, size, and content of the texts it has learned from. Following from this statement, an important investigation to perform is into how much the accuracy of the system was influenced by the choice of training texts.
+
 \subsection{Methods of Experimentation}
 \begin{itemize}
 	\item Collect sets of Tweets and matching corrected Tweets
@@ -97,31 +176,7 @@ Lots of numbers, explanations and graphs
 	\item Average accuracy over each of the Tweet sets
 	\item Use evaluation metric to decide which is better
 	\item Does any one of the systems/voting system perform better?
-\end{itemize}
-
-\subsection{Results and Analysis}
-Lots of numbers, explanations and graphs
-
-\section{Is it Possible to Train on Tweets?}
-\subsection{Methods of Experimentation}
-\begin{itemize}
-	\item Collect training sets of Tweets
-	\item Collect sets of Tweets and matching corrected Tweets
-	\item Train up system on each of the training sets of Tweets
-	\item Compare each of the systems including the voting system and an Aspell run on non-Tweets
-	\item Average accuracy over each of the Tweet sets
-	\item Use evaluation metric to decide which is better
-	\item Does any one of the systems/voting system perform better?
-\end{itemize}
-
-\subsection{Results and Analysis}
-Lots of numbers, explanations and graphs
-
-\section{Is it possible to Fit Corrections to 140 Characters?}
-\subsection{Methods of Experimentation}
-\begin{itemize}
-	\item Explore each of the results length to see if it's required first
-	\item Then explore if anything can be done to shorten Tweets back to 140 characters
+	\item PUT TWEETS STUFF IN HERE TOO LOL
 \end{itemize}
 
 \subsection{Results and Analysis}
